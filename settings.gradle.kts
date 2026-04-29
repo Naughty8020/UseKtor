@@ -13,6 +13,9 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         create("ktorLibs").from("io.ktor:ktor-version-catalog:3.4.0")
+        create("kargo") {
+            from(files("gradle/kargo.versions.toml"))
+        }
     }
 }
 

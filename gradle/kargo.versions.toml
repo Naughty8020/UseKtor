@@ -1,0 +1,10 @@
+# Kargo generated file: don't edit manually!
+
+[versions]
+    ktor-client-core = "3.4.3"
+    ktor = "3.4.3"
+
+[libraries]
+    ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
+
+[plugins]

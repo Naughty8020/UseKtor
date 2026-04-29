@@ -15,9 +15,12 @@ kotlin {
     jvmToolchain(21)
 }
 dependencies {
+
     implementation(ktorLibs.server.config.yaml)
     implementation(ktorLibs.server.core)
     implementation(ktorLibs.server.netty)
+    implementation(kargo.ktor.client.core)
+
 
     // libs.versions.toml で定義したものは libs. で参照
     implementation(libs.server.content.negotiation)      // ← 追加
@@ -27,4 +30,5 @@ dependencies {
 
     testImplementation(kotlin("test"))
     testImplementation(ktorLibs.server.testHost)
+
 }
