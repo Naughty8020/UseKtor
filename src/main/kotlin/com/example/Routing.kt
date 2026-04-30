@@ -21,34 +21,34 @@ fun Application.configureRouting() {
         post("/addBooks"){
             val inputJson = call.receive<Book>()
             Books.addBook(inputJson)
-            call.respond(inputJson.id)
+            call.respond(HttpStatusCode.Created, "Book added successfully")
         }
 
-        put("/{bookName}"){
-            val id = call.parameters["id"]?.toInt()
-            if(id == null){
-                call.respond(HttpStatusCode.BadRequest, "Book name is required")
-                return@put
-            }
-            val inputJson = call.receive<Book>()
-            if(Books.updateBook(id, inputJson)){
-                call.respond(HttpStatusCode.OK, "Book updated successfully")
-            } else {
-                call.respond(HttpStatusCode.NotFound, "Book not found")
-            }
-        }
-
-        delete("/{bookName}"){
-            val id = call.parameters["id"]?.toInt()
-            if(id == null){
-                call.respond(HttpStatusCode.BadRequest, "Book name is required")
-                return@delete
-            }
-            if(Books.deleteBook(id)){
-                call.respond(HttpStatusCode.OK, "Book deleted successfully")
-            } else {
-                call.respond(HttpStatusCode.NotFound, "Book not found")
-            }
-        }
-    }
+//        put("/{bookName}"){
+//            val id = call.parameters["id"]?.toInt()
+//            if(id == null){
+//                call.respond(HttpStatusCode.BadRequest, "Book name is required")
+//                return@put
+//            }
+//            val inputJson = call.receive<Book>()
+//            if(Books.updateBook(id, inputJson)){
+//                call.respond(HttpStatusCode.OK, "Book updated successfully")
+//            } else {
+//                call.respond(HttpStatusCode.NotFound, "Book not found")
+//            }
+//        }
+//
+//        delete("/{bookName}"){
+//            val id = call.parameters["id"]?.toInt()
+//            if(id == null){
+//                call.respond(HttpStatusCode.BadRequest, "Book name is required")
+//                return@delete
+//            }
+//            if(Books.deleteBook(id)){
+//                call.respond(HttpStatusCode.OK, "Book deleted successfully")
+//            } else {
+//                call.respond(HttpStatusCode.NotFound, "Book not found")
+//            }
+//        }
+   }
 }

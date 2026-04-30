@@ -4,4 +4,10 @@ ktor:
   application:
     modules:
       - com.example.SerializationKt.configureSerialization
+      - com.example.DatabasesKt.configureDatabases
       - com.example.RoutingKt.configureRouting
+
+database:
+  url: "jdbc:postgresql://127.0.0.1:5432/usektor"
+  user: "tamurayusuke"
+  password: ""
