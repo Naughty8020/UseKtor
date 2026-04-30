@@ -15,20 +15,29 @@ kotlin {
     jvmToolchain(21)
 }
 dependencies {
-
-    implementation(ktorLibs.server.config.yaml)
+    // Ktor 基本
     implementation(ktorLibs.server.core)
     implementation(ktorLibs.server.netty)
-    implementation(kargo.ktor.client.core)
+    implementation(ktorLibs.server.config.yaml)
 
+    // JSON変換 (libs. に統一)
+    implementation(libs.server.content.negotiation)
+    implementation(libs.serialization.kotlinx.json)
 
-    // libs.versions.toml で定義したものは libs. で参照
-    implementation(libs.server.content.negotiation)      // ← 追加
-    implementation(libs.serialization.kotlinx.json)      // ← libs. に変更
+    // DB: Exposed (バージョン管理が libs.versions.toml にあるなら libs. で統一)
+    // もし libs. でエラーが出るなら、直接文字列で書く方だけ残せばOKです
+    implementation("org.jetbrains.exposed:exposed-core:0.50.0")
+    implementation("org.jetbrains.exposed:exposed-dao:0.50.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.50.0")
 
+    // DB: Driver
+    implementation("org.postgresql:postgresql:42.7.2")
+    // implementation(libs.h2) // Postgres一本で行くならH2は消してもOK
+
+    // Logging
     implementation(libs.logback.classic)
 
+    // Test
     testImplementation(kotlin("test"))
     testImplementation(ktorLibs.server.testHost)
-
 }
