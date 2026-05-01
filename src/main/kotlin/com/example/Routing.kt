@@ -11,6 +11,7 @@ import io.ktor.http.HttpStatusCode
 import com.example.models.User
 import io.ktor.server.auth.*
 import java.util.Date
+import com.example.models.Users
 
 fun Application.configureRouting() {
     routing {
@@ -20,6 +21,8 @@ fun Application.configureRouting() {
 
         post("/login") {
             val user = call.receive<User>()
+            val storedPassword = Users.findByUsername(user.username)
+            if (storedPassword != null && storedPassword == user.password) {
             val secret = environment.config.property("jwt.secret").getString()
             val issuer = environment.config.property("jwt.issuer").getString()
             val audience = environment.config.property("jwt.audience").getString()
@@ -32,6 +35,9 @@ fun Application.configureRouting() {
                 .sign(com.auth0.jwt.algorithms.Algorithm.HMAC256(secret))
 
             call.respond(mapOf("token" to token))
+        }else {
+            call.respond(HttpStatusCode.Unauthorized, "Invalid username or password")
+            }
         }
 
         authenticate("auth-jwt") {
