@@ -24,19 +24,19 @@ fun Application.configureRouting() {
             call.respond(HttpStatusCode.Created, "Book added successfully")
         }
 
-//        put("/{bookName}"){
-//            val id = call.parameters["id"]?.toInt()
-//            if(id == null){
-//                call.respond(HttpStatusCode.BadRequest, "Book name is required")
-//                return@put
-//            }
-//            val inputJson = call.receive<Book>()
-//            if(Books.updateBook(id, inputJson)){
-//                call.respond(HttpStatusCode.OK, "Book updated successfully")
-//            } else {
-//                call.respond(HttpStatusCode.NotFound, "Book not found")
-//            }
-//        }
+        put("/{id}"){
+            val id = call.parameters["id"]?.toInt()
+            if(id == null){
+                call.respond(HttpStatusCode.BadRequest, "Book name is required")
+                return@put
+            }
+            val inputJson = call.receive<Book>()
+            if(Books.updateBook(id, inputJson) > 0){
+                call.respond(HttpStatusCode.OK, "Book updated successfully")
+            } else {
+                call.respond(HttpStatusCode.NotFound, "Book not found")
+            }
+        }
 //
 //        delete("/{bookName}"){
 //            val id = call.parameters["id"]?.toInt()
