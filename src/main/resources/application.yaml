@@ -3,11 +3,20 @@ ktor:
     port: 8080
   application:
     modules:
+      - com.example.SecurityKt.configureSecurity
       - com.example.SerializationKt.configureSerialization
       - com.example.DatabasesKt.configureDatabases
       - com.example.RoutingKt.configureRouting
+
 
 database:
   url: "jdbc:postgresql://127.0.0.1:5432/usektor"
   user: "tamurayusuke"
   password: ""
+
+
+jwt:
+  secret: "secret"
+  issuer: "http://0.0.0.0:8080/"
+  audience: "http://0.0.0.0:8080/hello"
+  realm: "Access to 'hello'"
