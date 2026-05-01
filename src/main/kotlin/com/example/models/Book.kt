@@ -1,10 +1,13 @@
 package com.example.models
 
 import kotlinx.serialization.Serializable
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
+import org.jetbrains.exposed.sql.deleteWhere
 
 @Serializable
 data class Book(
@@ -36,24 +39,15 @@ object Books : Table("books") {
         }
     }
 
+    fun updateBook(id: Int, updatedBook: Book): Int = transaction{
+    Books.update({ Books.id eq id }) {
+        it[title] = updatedBook.title
+        it[author] = updatedBook.author
+    }
+    }
 
-
-//    fun getBookById(id: Int): Book? {
-//        return books.find { it.id == id }
-//    }
-//
-//    fun updateBook(id: Int, updatedBook: Book): Boolean {
-//        val index = books.indexOfFirst { it.id == id }
-//        return if (index != -1) {
-//            books[index] = updatedBook
-//            true
-//        } else {
-//            false
-//        }
-//    }
-//
-//    fun deleteBook(id: Int): Boolean {
-//        return books.removeIf { it.id == id }
-//    }
+    fun deleteBook(id: Int): Int = transaction {
+        Books.deleteWhere { Books.id eq id }
+    }
 
 }
