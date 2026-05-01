@@ -37,18 +37,18 @@ fun Application.configureRouting() {
                 call.respond(HttpStatusCode.NotFound, "Book not found")
             }
         }
-//
-//        delete("/{bookName}"){
-//            val id = call.parameters["id"]?.toInt()
-//            if(id == null){
-//                call.respond(HttpStatusCode.BadRequest, "Book name is required")
-//                return@delete
-//            }
-//            if(Books.deleteBook(id)){
-//                call.respond(HttpStatusCode.OK, "Book deleted successfully")
-//            } else {
-//                call.respond(HttpStatusCode.NotFound, "Book not found")
-//            }
-//        }
+
+        delete("/{id}"){
+            val id = call.parameters["id"]?.toInt()
+            if(id == null){
+                call.respond(HttpStatusCode.BadRequest, "Book name is required")
+                return@delete
+            }
+            if(Books.deleteBook(id) > 0){
+                call.respond(HttpStatusCode.OK, "Book deleted successfully")
+            } else {
+                call.respond(HttpStatusCode.NotFound, "Book not found")
+            }
+        }
    }
 }
