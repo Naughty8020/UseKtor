@@ -1,31 +1,18 @@
-# ktor-sample
-
-This project was created using the [Ktor Project Generator](https://start.ktor.io).
-
-Here are some useful links to get you started:
-
-* [Ktor Documentation](https://ktor.io/docs/home.html)
-* [Ktor GitHub page](https://github.com/ktorio/ktor)
-* [Ktor Slack chat](https://app.slack.com/client/T09229ZC6/C0A974TJ9). [Request an invite](https://surveys.jetbrains.com/s3/kotlin-slack-sign-up).
-
-## Features
-
-Here's a list of features included in this project:
-
-| Name | Description |
-|------|-------------|
-
-## Building & Running
-
-To build or run the project, use one of the following tasks:
-
-| Task | Description |
-|------|-------------|
-
-If the server starts successfully, you'll see the following output:
-
+### AIの出力によるktorのベストプラクティス？
+```bash
+src/main/kotlin/com/example/
+├── Application.kt          # サーバー起動とプラグイン設定の起点
+├── plugins/                # 設定（Routing, Serializationなど）を分離
+│   ├── Routing.kt
+│   ├── Serialization.kt
+│   └── Security.kt
+├── routes/                 # エンドポイントの定義（Controller相当）
+│   ├── UserRoutes.kt
+│   └── OrderRoutes.kt
+├── models/                 # データ構造 (data class)
+│   └── User.kt
+├── repository/             # データベース操作 (Exposedなどを使用)
+│   └── UserRepository.kt
+└── services/               # ビジネスロジック（複雑な計算や判定）
+    └── UserService.kt
 ```
-2024-12-04 14:32:45.584 [main] INFO  Application - Application started in 0.303 seconds.
-2024-12-04 14:32:45.682 [main] INFO  Application - Responding at http://0.0.0.0:8080
-```
-# UseKtor
