@@ -13,11 +13,23 @@ import io.ktor.server.auth.*
 import java.util.Date
 import com.example.models.Users
 
+
 fun Application.configureRouting() {
     routing {
         get("/") {
             call.respondText("Hello, World!")
         }
+
+        post("/auth") {
+            val user = call.receive<User>()
+            val useId = Users.addUser(user)
+            if (useId > 0) {
+                call.respond(HttpStatusCode.Created, "User registered successfully")
+            } else {
+                call.respond(HttpStatusCode.InternalServerError, "Failed to register user")
+            }
+        }
+
 
         post("/login") {
             val user = call.receive<User>()
