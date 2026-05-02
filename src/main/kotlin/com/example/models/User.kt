@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.insert
 
 @Serializable
 data class User(
@@ -21,6 +22,13 @@ object Users : Table("Users"){
         Users.selectAll().where{ Users.username eq username}
             .map { it[Users.passwordHash] }
             .singleOrNull()
+    }
+
+    fun addUser(user: User): Int = transaction {
+        Users.insert {
+            it[username] = user.username
+            it[passwordHash] = user.password
+        } get Users.id
     }
 }
 
