@@ -6,6 +6,7 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import com.example.models.Users
+import com.example.models.Rentals
 
 fun Application.configureDatabases() {
     val config = environment.config
@@ -15,7 +16,6 @@ fun Application.configureDatabases() {
         password = config.property("database.password").getString()
     )
     transaction {
-        SchemaUtils.create(Books)
-        SchemaUtils.create(Users)
+        SchemaUtils.create(Users, Books, Rentals)
     }
 }
