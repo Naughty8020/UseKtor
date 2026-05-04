@@ -7,6 +7,7 @@ ktor:
       - com.example.plugins.DatabasesKt.configureDatabases
       - com.example.plugins.SerializationKt.configureSerialization
       - com.example.plugins.RoutingKt.configureRouting
+      - com.example.plugins.SwaggerKt.configureSwagger
 
 
 database:
@@ -20,3 +21,5 @@ jwt:
   issuer: "http://0.0.0.0:8080/"
   audience: "http://0.0.0.0:8080/hello"
   realm: "Access to 'hello'"
+
+

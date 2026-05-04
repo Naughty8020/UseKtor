@@ -1,0 +1,345 @@
+openapi: 3.0.3
+info:
+  title: Book Rental API
+  version: "1.0.0"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+          example: "john"
+        password:
+          type: string
+          example: "secret"
+
+    Book:
+      type: object
+      required: [id, title, author, ownerId]
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "Clean Code"
+        author:
+          type: string
+          example: "Robert C. Martin"
+        ownerId:
+          type: integer
+          example: 1
+
+    Rental:
+      type: object
+      required: [id, bookId, userId, rentalDate, dueDate]
+      properties:
+        id:
+          type: integer
+          example: 1
+        bookId:
+          type: integer
+          example: 2
+        userId:
+          type: integer
+          example: 1
+        rentalDate:
+          type: string
+          example: "2026-05-05"
+        dueDate:
+          type: string
+          example: "2026-05-12"
+        returnDate:
+          type: string
+          nullable: true
+          example: null
+
+paths:
+  /books/:
+    get:
+      summary: ヘルスチェック
+      tags: [Books]
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Hello, World!"
+
+  /books/auth:
+    post:
+      summary: ユーザー登録
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: 登録成功
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "User registered successfully"
+        '500':
+          description: 登録失敗
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Failed to register user"
+
+  /books/login:
+    post:
+      summary: ログイン（JWTトークン取得）
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: ログイン成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        '401':
+          description: 認証失敗
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Invalid username or password"
+
+  /books/allBooks:
+    get:
+      summary: 全ての本を取得
+      tags: [Books]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 書籍一覧
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+        '401':
+          description: 認証エラー
+
+  /books/addBooks:
+    post:
+      summary: 本を追加
+      tags: [Books]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses:
+        '201':
+          description: 追加成功
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Book added successfully"
+        '401':
+          description: 認証エラー
+
+  /books/{id}:
+    put:
+      summary: 本を更新
+      tags: [Books]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Book updated successfully"
+        '400':
+          description: IDが無効
+        '401':
+          description: 認証エラー
+        '404':
+          description: 本が見つからない
+
+    delete:
+      summary: 本を削除
+      tags: [Books]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 削除成功
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Book deleted successfully"
+        '400':
+          description: IDが無効
+        '401':
+          description: 認証エラー
+        '404':
+          description: 本が見つからない
+
+  /rent/:
+    get:
+      summary: レンタルサービス ヘルスチェック
+      tags: [Rentals]
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Welcome to the Book Rental Service!"
+
+  /rent/rentBook:
+    post:
+      summary: 本を借りる
+      tags: [Rentals]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [bookId, userId, rentalDate, dueDate]
+              properties:
+                bookId:
+                  type: integer
+                  example: 2
+                userId:
+                  type: integer
+                  example: 1
+                rentalDate:
+                  type: string
+                  example: "2026-05-05"
+                dueDate:
+                  type: string
+                  example: "2026-05-12"
+      responses:
+        '200':
+          description: 貸し出し成功
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Book rented successfully!"
+        '401':
+          description: 認証エラー
+
+  /rent/returnBook:
+    post:
+      summary: 本を返却する
+      tags: [Rentals]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [id, rentalDate]
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                rentalDate:
+                  type: string
+                  example: "2026-05-05"
+      responses:
+        '200':
+          description: 返却成功
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Book returned successfully!"
+        '401':
+          description: 認証エラー
+
+  /rent/history/{userId}:
+    get:
+      summary: ユーザーのレンタル履歴を取得
+      tags: [Rentals]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: レンタル履歴
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Rental'
+        '400':
+          description: 無効なユーザーID
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Invalid user ID"
+        '401':
+          description: 認証エラー

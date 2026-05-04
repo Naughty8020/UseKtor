@@ -20,19 +20,17 @@ dependencies {
     implementation(ktorLibs.server.netty)
     implementation(ktorLibs.server.config.yaml)
 
-    // JSON変換 (libs. に統一)
+    // JSON変換
     implementation(libs.server.content.negotiation)
     implementation(libs.serialization.kotlinx.json)
 
-    // DB: Exposed (バージョン管理が libs.versions.toml にあるなら libs. で統一)
-    // もし libs. でエラーが出るなら、直接文字列で書く方だけ残せばOKです
+    // DB: Exposed
     implementation("org.jetbrains.exposed:exposed-core:0.50.0")
     implementation("org.jetbrains.exposed:exposed-dao:0.50.0")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.50.0")
 
     // DB: Driver
     implementation("org.postgresql:postgresql:42.7.2")
-    // implementation(libs.h2) // Postgres一本で行くならH2は消してもOK
 
     // Logging
     implementation(libs.logback.classic)
@@ -41,6 +39,13 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation(ktorLibs.server.testHost)
 
-    implementation("io.ktor:ktor-server-auth-jvm")
-    implementation("io.ktor:ktor-server-auth-jwt-jvm")
+    // Auth & JWT
+    implementation(ktorLibs.server.auth)      // ktorLibs形式に統一
+    implementation(ktorLibs.server.auth.jwt)  // ktorLibs形式に統一
+
+    // Swagger / OpenAPI / CORS
+    // libs.versions.tomlに定義がある場合はこちら
+    implementation(ktorLibs.server.openapi)
+    implementation(ktorLibs.server.swagger)
+    implementation(ktorLibs.server.cors)
 }
