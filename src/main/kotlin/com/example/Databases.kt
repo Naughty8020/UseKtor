@@ -5,6 +5,7 @@ import io.ktor.server.application.Application
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
+import com.example.models.Users
 
 fun Application.configureDatabases() {
     val config = environment.config
@@ -15,5 +16,6 @@ fun Application.configureDatabases() {
     )
     transaction {
         SchemaUtils.create(Books)
+        SchemaUtils.create(Users)
     }
 }
