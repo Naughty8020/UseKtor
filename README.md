@@ -18,18 +18,18 @@ src/main/kotlin/com/example/
 ```
 
 ---
-
+### 1. 認証・認可 (Authentication & Authorization)
 ``` bash
 curl -X POST "http://0.0.0.0:8080/books/auth" \
 -H "Content-Type: application/json" \
--d '{"username": "tamura", "password": "password123"}'
+-d '{"username": "admin", "password": "password123"}'
 ```
 
 *   **ログイン (トークン取得)**
     ```bash
     curl -X POST "http://0.0.0.0:8080/books/login" \
          -H "Content-Type: application/json" \
-         -d '{"username": "tamura", "password": "password123"}'
+         -d '{"username": "admin", "password": "password123"}'
     ```
     > **Note:** 返ってきた `"token": "..."` の値を、以下の `YOUR_TOKEN` 部分に差し替えてください。
 
