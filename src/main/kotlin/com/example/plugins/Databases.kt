@@ -1,4 +1,4 @@
-package com.example
+package com.example.plugins
 
 import com.example.models.Books
 import io.ktor.server.application.Application

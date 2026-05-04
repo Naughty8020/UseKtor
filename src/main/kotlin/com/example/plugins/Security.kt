@@ -1,6 +1,5 @@
-package com.example
+package com.example.plugins
 
-import com.sun.net.httpserver.Authenticator
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.auth.Authentication

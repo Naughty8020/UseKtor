@@ -15,8 +15,8 @@ import java.util.Date
 import com.example.models.Users
 
 
-fun Application.configureRouting() {
-    routing {
+fun Route.bookRouters() {
+    route("/books") {
         get("/") {
             call.respondText("Hello, World!")
         }
