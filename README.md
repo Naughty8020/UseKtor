@@ -1,20 +1,20 @@
-### AIの出力によるktorのベストプラクティス？
-```bash
+### プロジェクト構造
+```
 src/main/kotlin/com/example/
-├── Application.kt          # サーバー起動とプラグイン設定の起点
+├── main.kt                 # サーバー起動とプラグイン設定の起点
 ├── plugins/                # 設定（Routing, Serializationなど）を分離
-│   ├── Routing.kt
-│   ├── Serialization.kt
-│   └── Security.kt
+│   ├── Databases.kt        # DB接続・テーブル初期化 (Exposed)
+│   ├── Routing.kt          # ルーティングの集約
+│   ├── Security.kt         # JWT認証設定
+│   ├── Serialization.kt    # JSON変換設定
+│   └── Swagger.kt          # Swagger UI設定
 ├── routes/                 # エンドポイントの定義（Controller相当）
-│   ├── UserRoutes.kt
-│   └── OrderRoutes.kt
-├── models/                 # データ構造 (data class)
-│   └── User.kt
-├── repository/             # データベース操作 (Exposedなどを使用)
-│   └── UserRepository.kt
-└── services/               # ビジネスロジック（複雑な計算や判定）
-    └── UserService.kt
+│   ├── BookRoutes.kt       # /books 配下のルート
+│   └── RentRoutes.kt       # /rent 配下のルート
+└── models/                 # データ構造 (data class) & DB操作
+    ├── Book.kt
+    ├── Rentals.kt
+    └── User.kt
 ```
 
 ---
