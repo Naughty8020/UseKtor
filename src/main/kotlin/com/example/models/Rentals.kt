@@ -7,6 +7,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.update
 
 @Serializable
 data class Rental(
@@ -28,21 +29,45 @@ object Rentals : Table("rentals") {
 
     override val primaryKey = PrimaryKey(id)
 
-    fun rentBook(rental: Rental,)= transaction {
-
+    fun rentBook(
+        targetBookId: Int,
+        targetUserId: Int,
+        rentalDateValue: String,
+        dueDateValue: String): Int? = transaction {
         val isAlreadyRented = Rentals.selectAll()
-            .where { Rentals.bookId eq rental.bookId and (Rentals.returnDate.isNull()) }
+            .where { Rentals.bookId eq targetBookId and (Rentals.returnDate.isNull()) }
             .count() > 0
         if (isAlreadyRented) return@transaction null
 
         Rentals.insert {
-            it[bookId] = rental.bookId
-            it[userId] = rental.userId
-            it[rentalDate] = rental.rentalDate
-            it[dueDate] = rental.dueDate
+            it[bookId] = targetBookId
+            it[userId] = targetUserId
+            it[rentalDate] = rentalDateValue
+            it[dueDate] = dueDateValue
         }get Rentals.id
     }
 
+    fun returnBook(rentalId: Int,rentalDateValue: String) =  transaction {
+        Rentals.update({ Rentals.id eq rentalId }) {
+            it[Rentals.returnDate] = rentalDateValue
+        }
+    }
+
+    fun getAllHistory(targetUserId: Int):List<Rental> = transaction {
+        Rentals.selectAll()
+            .where { Rentals.userId eq targetUserId }
+            .map {
+                Rental(
+                    id = it[Rentals.id],
+                    bookId = it[Rentals.bookId],
+                    userId = it[Rentals.userId],
+                    rentalDate = it[Rentals.rentalDate],
+                    dueDate = it[Rentals.dueDate],
+                    returnDate = it[Rentals.returnDate]
+                )
+            }
+
+    }
 
 
 }
