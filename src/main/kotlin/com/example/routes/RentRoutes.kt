@@ -10,7 +10,7 @@ import io.ktor.server.routing.route
 import com.example.models.Rental
 import com.example.models.Rentals
 import io.ktor.server.auth.authenticate
-
+import io.ktor.server.response.respond
 
 fun Route.rentRoutes () {
     route ("/rent")  {
@@ -28,6 +28,25 @@ fun Route.rentRoutes () {
                     dueDateValue = rentalBook.dueDate
                 )
                 call.respondText("Book rented successfully!")
+            }
+
+            post ("/returnBook") {
+                val rentalReturn = call.receive<Rental>()
+                Rentals.returnBook(
+                    rentalId = rentalReturn.id,
+                    rentalDateValue = rentalReturn.rentalDate
+                )
+                call.respondText("Book returned successfully!")
+            }
+
+            get ("/history/{userId}") {
+                val userId = call.parameters["userId"]?.toIntOrNull()
+                if (userId != null) {
+                    val history = Rentals.getAllHistory(userId)
+                    call.respond(history)
+                } else {
+                    call.respondText("Invalid user ID")
+                }
             }
         }
 
