@@ -36,55 +36,50 @@ curl -X POST "http://0.0.0.0:8080/books/auth" \
 ---
 
 ### 2. 本の操作（要JWT認証）
-ここからはヘッダーに `Authorization: Bearer <TOKEN>` が必要です。
+1. 前準備：変数のセット
+   ログイン時に取得したトークンをセットしてください。
 
-*   **本の一覧取得**
-    ```bash
-    curl -H "Authorization: Bearer YOUR_TOKEN" \
-         "http://0.0.0.0:8080/books/allBooks"
-    ```
+Bash
+export TOKEN="あなたのJWTトークン"
+2. CRUD操作のテストコマンド
+   【C】Create：本を追加する
+   ownerId が必要です。ここでは admin ユーザー（ID: 1 と想定）が所有者として登録する例です。
 
-*   **本の追加**
-    ```bash
-    curl -X POST "http://0.0.0.0:8080/books/addBooks" \
-         -H "Authorization: Bearer YOUR_TOKEN" \
-         -H "Content-Type: application/json" \
-         -d '{
-           "id": 0,
-           "title": "Kotlin入門",
-           "author": "JetBrains",
-           "ownerId": 1
-         }'
-    ```
+Bash
+curl -X POST "http://0.0.0.0:8080/books/addBooks" \
+-H "Authorization: Bearer $TOKEN" \
+-H "Content-Type: application/json" \
+-d '{
+"id": 0,
+"title": "Kotlin入門",
+"author": "山田太郎",
+"ownerId": 1
+}'
+【R】Read：本の一覧を取得する
+登録した内容が ownerId 込みで返ってくるか確認します。
 
-*   **本の更新 (ID指定)**
-    ```bash
-    curl -X PUT "http://0.0.0.0:8080/books/1" \
-         -H "Authorization: Bearer YOUR_TOKEN" \
-         -H "Content-Type: application/json" \
-         -d '{
-           "id": 1,
-           "title": "Kotlin入門 改訂版",
-           "author": "JetBrains",
-           "ownerId": 1
-         }'
-    ```
+Bash
+curl -X GET "http://0.0.0.0:8080/books/allBooks" \
+-H "Authorization: Bearer $TOKEN"
+【U】Update：本の情報を更新する
+IDを指定して更新します（例として ID: 1 を指定）。現在の updateBook の実装では title と author が更新対象です。
 
-*   **本の削除 (ID指定)**
-    ```bash
-    curl -X DELETE "http://0.0.0.0:8080/books/1" \
-         -H "Authorization: Bearer YOUR_TOKEN"
-    ```
+Bash
+curl -X PUT "http://0.0.0.0:8080/books/1" \
+-H "Authorization: Bearer $TOKEN" \
+-H "Content-Type: application/json" \
+-d '{
+"id": 1,
+"title": "Kotlin実践ガイド",
+"author": "山田次郎",
+"ownerId": 1
+}'
+【D】Delete：本を削除する
+指定したIDの本を削除します。
 
----
-
-### 3. その他
-*   **ヘルスチェック**
-    ```bash
-    curl "http://0.0.0.0:8080/books/"
-    ```
-
----
+Bash
+curl -X DELETE "http://0.0.0.0:8080/books/1" \
+-H "Authorization: Bearer $TOKEN"
 
 ### 💡 補足
 今の `bookそのコードの構成（`route("/books")` で括られている状態）に基づいた、正しい `curl` コマンドをまとめました。
