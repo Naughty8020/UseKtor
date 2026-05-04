@@ -1,6 +1,7 @@
-package com.example
+package com.example.routes
 
 import com.auth0.jwt.JWT
+import com.auth0.jwt.algorithms.Algorithm
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -44,7 +45,7 @@ fun Application.configureRouting() {
                 .withIssuer(issuer)
                 .withClaim("username", user.username)
                 .withExpiresAt(Date(System.currentTimeMillis() + 600000))
-                .sign(com.auth0.jwt.algorithms.Algorithm.HMAC256(secret))
+                .sign(Algorithm.HMAC256(secret))
 
             call.respond(mapOf("token" to token))
         }else {
