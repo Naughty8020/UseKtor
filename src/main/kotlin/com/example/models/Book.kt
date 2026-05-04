@@ -13,19 +13,22 @@ import org.jetbrains.exposed.sql.deleteWhere
 data class Book(
     val id: Int,
     val title: String,
-    val author: String
+    val author: String,
+    val ownerId: Int
 )
 
 object Books : Table("books") {
     val id = integer("id").autoIncrement()
     val title = varchar("title", 255)
     val author = varchar("author", 255)
+    val ownerId = reference("owner_id", Users.id)
     override val primaryKey = PrimaryKey(id)
 
     fun addBook(book: Book): Int = transaction {
         Books.insert {
             it[title] = book.title
             it[author] = book.author
+            it[ownerId] = book.ownerId
         } get Books.id
     }
 
@@ -34,7 +37,8 @@ object Books : Table("books") {
             Book(
                 id = it[Books.id],
                 title = it[Books.title],
-                author = it[Books.author]
+                author = it[Books.author],
+                ownerId = it[Books.ownerId]
             )
         }
     }
