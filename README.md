@@ -18,6 +18,18 @@ src/main/kotlin/com/example/
 ```
 
 ---
+
+### 🛠 Swagger UI (APIドキュメントとテスト)
+#### 本システムでは Swagger UI を導入しており、ブラウザ上でAPIの仕様確認や実行テストを直接行うことができます。
+
+### アクセス方法
+#### サーバーを起動した後、以下のURLにアクセスしてください：
+```bash
+http://localhost:8080/swagger
+```
+
+---
+
 ### 📚 Book Rental System API Reference
 Ktorで構築した本管理および貸出管理システムのAPI仕様書です。
 
