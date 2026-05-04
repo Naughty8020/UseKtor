@@ -15,6 +15,9 @@ src/main/kotlin/com/example/
 │   └── UserRepository.kt
 └── services/               # ビジネスロジック（複雑な計算や判定）
     └── UserService.kt
+
+---
+
 ``` bash
 curl -X POST "http://0.0.0.0:8080/books/auth" \
 -H "Content-Type: application/json" \
