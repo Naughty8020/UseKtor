@@ -18,51 +18,64 @@ src/main/kotlin/com/example/
 ```
 
 ---
-📚 Book Rental System API Reference
+### 📚 Book Rental System API Reference
 Ktorで構築した本管理および貸出管理システムのAPI仕様書です。
 
-🔑 認証 (Authentication)
+### 🔑 認証 (Authentication)
 一部のエンドポイントを除き、JWTによる認証が必要です。
 
-ユーザー登録
-Bash
+### ユーザー登録
+```bash
 curl -X POST "http://0.0.0.0:8080/books/auth" \
 -H "Content-Type: application/json" \
 -d '{"username": "admin", "password": "password123"}'
-ログイン (トークン取得)
-Bash
+```
+
+### ログイン (トークン取得)
+```bash
 curl -X POST "http://0.0.0.0:8080/books/login" \
 -H "Content-Type: application/json" \
 -d '{"username": "admin", "password": "password123"}'
-返却された token を環境変数等に保存して使用してください。
+```
+
+### 返却された token を環境変数等に保存して使用してください。
+```bash
 export TOKEN="取得したトークン"
+```
 
-📖 本の管理 (Books API)
-全てのパスは /books から始まります。
+### 📖 本の管理 (Books API)
+#### 全てのパスは /books から始まります。
 
-本の一覧取得
-Bash
+### 本の一覧取得
+```bash
 curl -H "Authorization: Bearer $TOKEN" "http://0.0.0.0:8080/books/allBooks"
-本の追加
-Bash
+```
+
+### 本の追加
+```bash
 curl -X POST "http://0.0.0.0:8080/books/addBooks" \
 -H "Authorization: Bearer $TOKEN" \
 -H "Content-Type: application/json" \
 -d '{"id": 0, "title": "Kotlin入門", "author": "山田太郎", "ownerId": 1}'
-本の更新 (ID指定)
-Bash
+```
+
+### 本の更新 (ID指定)
+```bash
 curl -X PUT "http://0.0.0.0:8080/books/{id}" \
 -H "Authorization: Bearer $TOKEN" \
 -H "Content-Type: application/json" \
 -d '{"id": 1, "title": "Kotlin実践ガイド", "author": "山田次郎", "ownerId": 1}'
-本の削除 (ID指定)
-Bash
-curl -X DELETE "http://0.0.0.0:8080/books/{id}" -H "Authorization: Bearer $TOKEN"
-🤝 貸出管理 (Rental API)
-全てのパスは /rent から始まります。
+```
 
-本を借りる
-Bash
+### 本の削除 (ID指定)
+```bash
+curl -X DELETE "http://0.0.0.0:8080/books/{id}" -H "Authorization: Bearer $TOKEN"
+```
+### 🤝 貸出管理 (Rental API)
+#### 全てのパスは /rent から始まります。
+
+### 本を借りる
+```bash
 curl -X POST "http://0.0.0.0:8080/rent/rentBook" \
 -H "Authorization: Bearer $TOKEN" \
 -H "Content-Type: application/json" \
@@ -74,10 +87,12 @@ curl -X POST "http://0.0.0.0:8080/rent/rentBook" \
 "dueDate": "2026-05-18",
 "returnDate": null
 }'
-本を返却する
-id には rentals テーブルの ID（履歴取得で確認可能）を指定します。
+```
 
-Bash
+### 本を返却する
+#### id には rentals テーブルの ID（履歴取得で確認可能）を指定します。
+
+```bash
 curl -X POST "http://0.0.0.0:8080/rent/returnBook" \
 -H "Authorization: Bearer $TOKEN" \
 -H "Content-Type: application/json" \
@@ -89,6 +104,9 @@ curl -X POST "http://0.0.0.0:8080/rent/returnBook" \
 "dueDate": "",
 "returnDate": "2026-05-05"
 }'
-ユーザーごとの貸出履歴取得
-Bash
+```
+
+### ユーザーごとの貸出履歴取得
+```bash
 curl -H "Authorization: Bearer $TOKEN" "http://0.0.0.0:8080/rent/history/{userId}"
+```
