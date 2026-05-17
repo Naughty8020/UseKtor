@@ -43,6 +43,17 @@ object Books : Table("books") {
         }
     }
 
+    fun getBooksByOwner(userId: Int): List<Book> = transaction {
+        Books.selectAll().where { Books.ownerId eq userId }.map {
+            Book(
+                id = it[Books.id],
+                title = it[Books.title],
+                author = it[Books.author],
+                ownerId = it[Books.ownerId]
+            )
+        }
+    }
+
     fun updateBook(id: Int, updatedBook: Book): Int = transaction{
     Books.update({ Books.id eq id }) {
         it[title] = updatedBook.title

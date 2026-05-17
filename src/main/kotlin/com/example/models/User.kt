@@ -18,9 +18,15 @@ object Users : Table("Users"){
     val passwordHash = varchar("password_hash", 255)
     override val primaryKey = PrimaryKey(id)
 
-    fun findByUsername(username: String): String?= transaction {
-        Users.selectAll().where{ Users.username eq username}
+    fun findByUsername(username: String): String? = transaction {
+        Users.selectAll().where { Users.username eq username }
             .map { it[Users.passwordHash] }
+            .singleOrNull()
+    }
+
+    fun findByUsernameWithId(username: String): Pair<Int, String>? = transaction {
+        Users.selectAll().where { Users.username eq username }
+            .map { Pair(it[Users.id], it[Users.passwordHash]) }
             .singleOrNull()
     }
 

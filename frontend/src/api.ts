@@ -133,16 +133,16 @@ export const api = {
   },
 
   // 2. User Login
-  login: async (user: User): Promise<{ token: string }> => {
+  login: async (user: User): Promise<{ token: string; userId: number }> => {
     if (isMockMode()) {
       await new Promise((resolve) => setTimeout(resolve, 500));
       const fakeToken = `mock-jwt-token-for-${user.username}`;
       setAuthToken(fakeToken);
       setSavedUsername(user.username);
       setSavedUserId(1); // Mock user ID 1
-      return { token: fakeToken };
+      return { token: fakeToken, userId: 1 };
     }
-    
+
     const res = await apiFetch('/books/login', {
       method: 'POST',
       body: JSON.stringify(user),
@@ -151,9 +151,7 @@ export const api = {
     if (res && res.token) {
       setAuthToken(res.token);
       setSavedUsername(user.username);
-      // For simplicity in backend where exact userId isn't returned in login,
-      // we'll default user ID to 1, or parse from JWT if needed.
-      setSavedUserId(1);
+      setSavedUserId(res.userId);
     }
     return res;
   },

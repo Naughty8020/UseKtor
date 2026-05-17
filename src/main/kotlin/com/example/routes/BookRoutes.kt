@@ -11,8 +11,13 @@ import com.example.models.Book
 import io.ktor.http.HttpStatusCode
 import com.example.models.User
 import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import java.util.Date
 import com.example.models.Users
+import kotlinx.serialization.Serializable
+
+@Serializable
+private data class LoginResponse(val token: String, val userId: Int)
 
 
 fun Route.bookRouters() {
@@ -34,28 +39,35 @@ fun Route.bookRouters() {
 
         post("/login") {
             val user = call.receive<User>()
-            val storedPassword = Users.findByUsername(user.username)
-            if (storedPassword != null && storedPassword == user.password) {
-            val secret = environment.config.property("jwt.secret").getString()
-            val issuer = environment.config.property("jwt.issuer").getString()
-            val audience = environment.config.property("jwt.audience").getString()
+            val userRecord = Users.findByUsernameWithId(user.username)
+            if (userRecord != null && userRecord.second == user.password) {
+                val secret = environment.config.property("jwt.secret").getString()
+                val issuer = environment.config.property("jwt.issuer").getString()
+                val audience = environment.config.property("jwt.audience").getString()
 
-            val token = JWT.create()
-                .withAudience(audience)
-                .withIssuer(issuer)
-                .withClaim("username", user.username)
-                .withExpiresAt(Date(System.currentTimeMillis() + 600000))
-                .sign(Algorithm.HMAC256(secret))
+                val token = JWT.create()
+                    .withAudience(audience)
+                    .withIssuer(issuer)
+                    .withClaim("username", user.username)
+                    .withClaim("userId", userRecord.first)
+                    .withExpiresAt(Date(System.currentTimeMillis() + 600000))
+                    .sign(Algorithm.HMAC256(secret))
 
-            call.respond(mapOf("token" to token))
-        }else {
-            call.respond(HttpStatusCode.Unauthorized, "Invalid username or password")
+                call.respond(LoginResponse(token = token, userId = userRecord.first))
+            } else {
+                call.respond(HttpStatusCode.Unauthorized, "Invalid username or password")
             }
         }
 
         authenticate("auth-jwt") {
             get("/allBooks") {
-                val books = Books.getAllBooks()
+                val principal = call.principal<JWTPrincipal>()
+                val userId = principal?.payload?.getClaim("userId")?.asInt()
+                if (userId == null) {
+                    call.respond(HttpStatusCode.Unauthorized, "Invalid token")
+                    return@get
+                }
+                val books = Books.getBooksByOwner(userId)
                 call.respond(books)
             }
 
